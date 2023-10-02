@@ -1,0 +1,44 @@
+name: Green Talks Scraper
+
+on:
+  push:
+    branches:
+      - main
+    paths: ['.github/workflows/green-talks-scraper.yml', talks.md, scraper.sh, urls.txt]
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Prepend line to talks.md
+      run: echo "### An automatically generated list of environmental sustainability-related talks at The Linux Foundation events" > talks.md
+
+    - name: Run Scraper Script
+      run: |
+        chmod +x scraper.sh
+        ./scraper.sh >> talks.md
+    
+    - name: Commit file
+      run: |
+        # Check if "talks.md" has been modified
+        ls -la
+        if git diff --name-only | grep "talks.md" || git ls-files --others --exclude-standard | grep "talks.md"; then
+            git config --local user.email "workflow@green-talks-scraper.com"
+            git config --local user.name "green-talks-scraper-workflow"
+            git add talks.md
+            git commit -m "Update the green talks list"
+            echo "FILE_COMMITTED=true" >> $GITHUB_ENV  # Set an environment variable
+        else
+            echo "The list of talks is up to date"
+        fi
+
+    - name: Push changes
+      if: env.FILE_COMMITTED == 'true'
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        force: true
