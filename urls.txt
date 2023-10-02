@@ -1,12 +1,8 @@
+https://colocatedeventsna2023.sched.com
+https://kccncna2023.sched.com
 https://kccncosschn2023.sched.com
+https://colocatedeventseu2023.sched.com
 https://kccnceu2023.sched.com
-https://colocatedeventseu2023.sched.com/overview/type/ArgoCon
-https://colocatedeventseu2023.sched.com/overview/type/CiliumCon
-https://colocatedeventseu2023.sched.com/overview/type/Cloud+Native+Wasm+Day
-https://colocatedeventseu2023.sched.com/overview/type/Istio+Day
-https://colocatedeventseu2023.sched.com/overview/type/Kubernetes+on+Edge+Day
-https://colocatedeventseu2023.sched.com/overview/type/Linkerd+Day
-https://colocatedeventseu2023.sched.com/overview/type/Observability+Day
 https://cdcongitopscon2023.sched.com
 https://lssna2023.sched.com
 https://osseu2023.sched.com
