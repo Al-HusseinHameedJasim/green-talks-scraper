@@ -3,7 +3,7 @@ name: Green Talks Scraper
 on:
   push:
     branches:
-      - main
+      - testing
     paths: ['.github/workflows/green-talks-scraper.yml', talks.md, scraper.sh, urls.txt]
 
 jobs:
