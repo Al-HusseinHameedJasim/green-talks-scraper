@@ -18,12 +18,12 @@ contains_specific_word() {
     return 1  # No match found
 }
 
-# Read URLs from urls.txt file into an array
-readarray -t URLS < urls.txt
+# A function to process the content of a URL
+process_url() {
+    local url="$1"
+    local content
 
-# Loop through the array of URLs
-for url in "${URLS[@]}"; do
-	# Fetch the content of the URL
+    # Fetch the content of the URL
     content=$(curl -s "$url")
 
     # An associative array to store encountered titles
@@ -48,24 +48,39 @@ for url in "${URLS[@]}"; do
         done
     done
 
-    # Print the conference schedule link and "Talks:" section if talks were found
+    # An array to store filtered talks for the current URL
+    filtered_talks=()
+
+    # Filter the talks
     if [ "${#talks[@]}" -gt 0 ]; then
-        echo -e "\nConference schedule link: $url"
-        echo -e "\nTalks:"
         for title in "${talks[@]}"; do
             title_lowercase=$(echo "$title" | tr '[:upper:]' '[:lower:]')  # Convert title to lowercase for keyword counting
+	    # A counter to check the number of matched keywords in each title
             count=0
             for keyword in "${keywords[@]}"; do
                 if [[ "$title_lowercase" == *"$keyword"* ]]; then
                     ((count++))
                 fi
             done
-            # if [ "$count" -eq 1 ] && contains_specific_word "$title"; then
-	    if [ "$count" -eq 1 ] && contains_specific_word "$title_lowercase"; then
-                echo "- $title (Keywords Matched: $count) (Contains Specific Word)"
-            else
-                echo "- $title (Keywords Matched: $count)"
+            # Check if the talk has only one matched keyword and whether it should be excluded if it contains a specific word/phrase
+	    if ! { [ "$count" -eq 1 ] && contains_specific_word "$title_lowercase"; }; then
+                filtered_talks+=("$title")  # Add title to filtered_talks array
             fi
         done
     fi
+    # Print the conference schedule link and "Talks:" section if talks were found
+    if [ "${#filtered_talks[@]}" -gt 0 ]; then
+        echo -e "\nConference schedule link: $url"
+        echo -e "\nTalks:"
+        for filtered_title in "${filtered_talks[@]}"; do
+            echo "- $filtered_title"
+        done
+    fi
+}
+
+# Loop through the array of URLs and process each URL
+mapfile -t URLS < urls.txt
+
+for url in "${URLS[@]}"; do
+    process_url "$url"
 done
