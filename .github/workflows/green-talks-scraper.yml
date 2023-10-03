@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-    paths: ['.github/workflows/green-talks-scraper.yml', scraper.sh, urls.txt]
+    paths: ['.github/workflows/green-talks-scraper.yml', scraper.sh, talks.md, urls.txt]
 
 jobs:
   scrape:
@@ -31,7 +31,7 @@ jobs:
             git config --local user.email "workflow@green-talks-scraper.com"
             git config --local user.name "green-talks-scraper-workflow"
             git add talks.md
-            git commit -m "Update the green talks list"
+            git commit -m "Update the green talks list [skip actions]"
             echo "FILE_COMMITTED=true" >> $GITHUB_ENV  # Set an environment variable
         else
             echo "The list of talks is up to date"
