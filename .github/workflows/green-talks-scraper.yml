@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-    paths: ['.github/workflows/green-talks-scraper.yml', talks.md, scraper.sh, urls.txt]
+    paths: ['.github/workflows/green-talks-scraper.yml', scraper.sh, urls.txt]
 
 jobs:
   scrape:
@@ -13,6 +13,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+      with:
+        persist-credentials: false
 
     - name: Prepend line to talks.md
       run: echo "### An automatically generated list of environmental sustainability-related talks at The Linux Foundation events" > talks.md
@@ -25,7 +27,6 @@ jobs:
     - name: Commit file
       run: |
         # Check if "talks.md" has been modified
-        ls -la
         if git diff --name-only | grep "talks.md" || git ls-files --others --exclude-standard | grep "talks.md"; then
             git config --local user.email "workflow@green-talks-scraper.com"
             git config --local user.name "green-talks-scraper-workflow"
@@ -40,5 +41,5 @@ jobs:
       if: env.FILE_COMMITTED == 'true'
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.MY_GITHUB_TOKEN }}
         force: true
